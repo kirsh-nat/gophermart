@@ -27,8 +27,14 @@ func (h *URLHandler) checkMethod(w http.ResponseWriter, r *http.Request, method 
 }
 
 func (h *URLHandler) StatusBadRequest(w http.ResponseWriter, r *http.Request) bool {
-	w.WriteHeader(http.StatusMethodNotAllowed)
-	w.Write([]byte("Method not allowed"))
+	w.WriteHeader(http.StatusBadRequest)
+	w.Write([]byte("Bad request"))
+	return false
+}
+
+func (h *URLHandler) StatusServerError(w http.ResponseWriter, r *http.Request) bool {
+	w.WriteHeader(http.StatusInternalServerError)
+	w.Write([]byte("Something went wrong"))
 	return false
 }
 
