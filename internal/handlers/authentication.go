@@ -9,7 +9,7 @@ import (
 	"github.com/kirsh-nat/gophermart.git/gophermart/internal/models/user"
 )
 
-func (h *URLHandler) Registration(w http.ResponseWriter, r *http.Request) {
+func (h *URLHandler) Authentication(w http.ResponseWriter, r *http.Request) {
 	if !h.checkMethod(w, r, http.MethodPost) {
 		return
 	}
@@ -26,12 +26,12 @@ func (h *URLHandler) Registration(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userModel := user.NewUserModel(h.db)
-	u, err := userModel.Create(r.Context(), &user.User{Login: dataUser.Login, Password: dataUser.Password})
+	userModel := &user.UserModel{DB: h.db}
+	u, err := userModel.FindOne(r.Context(), dataUser.Login, dataUser.Password)
 	if err != nil {
-		var dErr *user.UserExistsError
+		var dErr *user.AuthorizationError
 		if errors.As(err, &dErr) {
-			w.WriteHeader(http.StatusConflict)
+			w.WriteHeader(http.StatusUnauthorized)
 			return
 
 		}
@@ -39,19 +39,13 @@ func (h *URLHandler) Registration(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, ok := (u).(*user.User)
+	_, ok := h.setCookieToken(u, w)
 	if !ok {
 		h.StatusServerError(w, r)
 		return
 	}
 
-	user, ok = h.setCookieToken(user, w)
-	if !ok {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("Something went wrong"))
-	}
-
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	_, _ = w.Write([]byte("User was successfully created: " + user.Login))
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write([]byte("OK"))
 }

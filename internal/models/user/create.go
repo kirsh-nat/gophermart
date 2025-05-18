@@ -18,7 +18,7 @@ func (userModel *UserModel) Create(ctx context.Context, model any) (any, error) 
 		return user, err
 	}
 
-	_, err = userModel.db.ExecContext(ctx,
+	_, err = userModel.DB.ExecContext(ctx,
 		"INSERT INTO users (username, password) VALUES ($1, $2)", user.Login, hashPassword)
 
 	if err != nil {

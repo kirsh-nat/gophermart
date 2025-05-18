@@ -11,7 +11,7 @@ func (userModel *UserModel) Delete(ctx context.Context, model any) error {
 		return errors.New("invalid model type")
 	}
 
-	_, err := userModel.db.ExecContext(ctx,
+	_, err := userModel.DB.ExecContext(ctx,
 		"DELETE FROM users WHERE id = ($1)",
 		user.ID)
 

@@ -12,7 +12,7 @@ func (userModel *UserModel) Update(ctx context.Context, model any) (any, error) 
 		return &User{}, errors.New("invalid model type")
 	}
 
-	_, err := userModel.db.ExecContext(ctx,
+	_, err := userModel.DB.ExecContext(ctx,
 		"INSERT INTO users (id, username, password, balance, spent, created_at) VALUES ($1, $2)",
 		user.ID, user.Login, user.Password, user.Balance, user.Spent, user.CreatedAt)
 

@@ -17,10 +17,10 @@ type User struct {
 }
 
 type UserModel struct {
-	db *sql.DB
+	DB *sql.DB
 }
 
 func NewUserModel(db *sql.DB) models.ModelInterface {
 	//return &models.Model{db: db}
-	return &UserModel{db: db}
+	return &UserModel{DB: db}
 }

@@ -2,10 +2,17 @@ package handlers
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
 
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/kirsh-nat/gophermart.git/gophermart/internal/models/user"
 )
+
+var dataUser struct {
+	Login    string `json:"login"`
+	Password string `json:"password"`
+}
 
 // type URLHandler struct {
 // 	service models.Model
@@ -41,17 +48,7 @@ func NewURLHandler(db *sql.DB) *URLHandler {
 // 	return user, true
 // }
 
-func (h *URLHandler) setCookieToken(user *user.User, w http.ResponseWriter, r *http.Request) (*user.User, bool) {
-	// userModel := user.NewUserModel(h.service.DB)
-	// u, err := userModel.Create(r.Context(), &user.User{})
-	// if err != nil {
-	// 	return nil, false
-	// }
-	// user, ok := (u).(*user.User)
-	// if !ok {
-	// 	return nil, false
-	// }
-
+func (h *URLHandler) setCookieToken(user *user.User, w http.ResponseWriter) (*user.User, bool) {
 	token, err := createToken(user)
 	if err != nil {
 		return nil, false
@@ -63,4 +60,46 @@ func (h *URLHandler) setCookieToken(user *user.User, w http.ResponseWriter, r *h
 		Path:  "/",
 	})
 	return user, true
+}
+
+func (h *URLHandler) getUserFromToken(w http.ResponseWriter, r *http.Request) (*user.User, bool) {
+	cookieToken, err := r.Cookie("token")
+	if err != nil || cookieToken == nil {
+		return &user.User{}, false
+	}
+
+	userId, err := getUserID(cookieToken.Value)
+	if err != nil {
+		return &user.User{}, false
+	}
+
+	userModel := user.NewUserModel(h.db)
+	foundUser, err := userModel.GetById(r.Context(), userId)
+	if err != nil {
+		return &user.User{}, false
+	}
+
+	user := foundUser.(*user.User)
+
+	return user, true
+}
+
+func getUserID(tokenString string) (int, error) {
+	claims := &Claims{}
+	token, err := jwt.ParseWithClaims(tokenString, claims,
+		func(t *jwt.Token) (interface{}, error) {
+			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
+			}
+			return []byte(secretKey), nil
+		})
+	if err != nil {
+		return 0, err
+	}
+
+	if !token.Valid {
+		return 0, err
+	}
+
+	return claims.UserID, nil
 }
