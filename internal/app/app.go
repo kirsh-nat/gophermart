@@ -10,8 +10,8 @@ import (
 // TODO: натсройка выавода логов в файл
 // TODO: сделать енв с базовыми настройками (лог файл и строка подключения к базе )
 var (
-	Sugar zap.SugaredLogger
-	DB    *sql.DB
-	//TODO: натсройка выавода логов в файл
+	Sugar   zap.SugaredLogger
+	DB      *sql.DB
 	ConnStr string
+	Address string
 )

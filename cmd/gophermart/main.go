@@ -31,5 +31,5 @@ func main() {
 
 func run(handler *handlers.URLHandler) error {
 	mux := handlers.Routes(handler)
-	return http.ListenAndServe("localhost:8080", mux)
+	return http.ListenAndServe(app.Address, mux)
 }

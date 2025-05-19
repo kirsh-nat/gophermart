@@ -8,18 +8,18 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func setDBConfig() {
+func setAddress() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Fail to get .env fail")
 	}
-	flag.StringVar(&ConnStr,
-		"d", os.Getenv("DATABASE_URI"),
+	flag.StringVar(&Address,
+		"a", os.Getenv("RUN_ADDRESS"),
 		"Адрес запуска HTTP-сервера",
 	)
 	flag.Parse()
 
-	if conn := os.Getenv("DATABASE_URI"); conn != "" {
-		ConnStr = conn
+	if adr := os.Getenv("RUN_ADDRESS"); adr != "" {
+		Address = adr
 	}
 }
