@@ -50,7 +50,7 @@ func (h *URLHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	orderModel := order.NewOrderModel(h.db)
-	_, err = orderModel.Create(r.Context(), &order.Order{userID: user.ID, Number: string(reqNumber)})
+	_, err = orderModel.Create(r.Context(), &order.Order{UserID: user.ID, Number: string(reqNumber)})
 	if err != nil {
 		var userErr *order.UserNumberExistsError
 		if errors.As(err, &userErr) {
