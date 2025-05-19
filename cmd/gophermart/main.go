@@ -2,6 +2,7 @@ package main
 
 import (
 	"embed"
+	"fmt"
 	"net/http"
 
 	"github.com/kirsh-nat/gophermart.git/cmd/gophermart/migrations"
@@ -17,7 +18,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	//service := models.NewModel(app.DB)
 	handler := handlers.NewURLHandler(app.DB)
 
 	if err := run(handler); err != nil {
@@ -31,5 +31,6 @@ func main() {
 
 func run(handler *handlers.URLHandler) error {
 	mux := handlers.Routes(handler)
-	return http.ListenAndServe(app.Address, mux)
+	fmt.Println("Server is running on http://localhost:8080")
+	return http.ListenAndServe("localhost:8080", mux)
 }
