@@ -9,7 +9,7 @@ import (
 
 type Order struct {
 	ID        int       `json:"id"`         // уникальный идентификатор
-	UserID    int       `json:"UserID"`     // имя пользователя
+	userID    int       `json:"userID"`     // имя пользователя
 	Number    string    `json:"number"`     // хэшированный пароль
 	Accural   float32   `json:"accural"`    // потраченная сумма балллов за весь период регистрации
 	Status    float32   `json:"status"`     // текущий баланс

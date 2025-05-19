@@ -11,9 +11,9 @@ type DraftItem struct {
 	ProcessedAt time.Time `json:"processed_at"`
 }
 
-func (conf *DraftModel) GetUserList(ctx context.Context, userID int) ([]DraftItem, error) {
+func (draftModel *DraftModel) GetUserList(ctx context.Context, userID int) ([]DraftItem, error) {
 	var drafts []DraftItem
-	rows, err := conf.DB.QueryContext(ctx,
+	rows, err := draftModel.DB.QueryContext(ctx,
 		"SELECT number, sum, processed_at FROM drafts WHERE user_id = $1 ORDER BY processed_at desc", userID)
 	if err != nil {
 		return nil, err

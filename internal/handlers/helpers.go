@@ -68,13 +68,13 @@ func (h *URLHandler) getUserFromToken(w http.ResponseWriter, r *http.Request) (*
 		return &user.User{}, false
 	}
 
-	userId, err := getUserID(cookieToken.Value)
+	userID, err := getuserID(cookieToken.Value)
 	if err != nil {
 		return &user.User{}, false
 	}
 
 	userModel := user.NewUserModel(h.db)
-	foundUser, err := userModel.GetById(r.Context(), userId)
+	foundUser, err := userModel.GetByID(r.Context(), userID)
 	if err != nil {
 		return &user.User{}, false
 	}
@@ -84,7 +84,7 @@ func (h *URLHandler) getUserFromToken(w http.ResponseWriter, r *http.Request) (*
 	return user, true
 }
 
-func getUserID(tokenString string) (int, error) {
+func getuserID(tokenString string) (int, error) {
 	claims := &Claims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims,
 		func(t *jwt.Token) (interface{}, error) {
@@ -101,5 +101,5 @@ func getUserID(tokenString string) (int, error) {
 		return 0, err
 	}
 
-	return claims.UserID, nil
+	return claims.userID, nil
 }

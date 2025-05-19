@@ -8,7 +8,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func setDbConfig() {
+func setDBConfig() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Fail to get .env fail")

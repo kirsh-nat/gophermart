@@ -13,9 +13,9 @@ type OrderItem struct {
 	UreatedAt time.Time `json:"updated_at"`
 }
 
-func (conf *OrderModel) GetUserList(ctx context.Context, userID int) ([]OrderItem, error) {
+func (orderModel *OrderModel) GetUserList(ctx context.Context, userID int) ([]OrderItem, error) {
 	var orders []OrderItem
-	rows, err := conf.DB.QueryContext(ctx,
+	rows, err := orderModel.DB.QueryContext(ctx,
 		"SELECT  number, status, accural, updated_at FROM orders WHERE user_id = $1 ORDER BY updated_at desc", userID)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -32,6 +32,10 @@ func (conf *OrderModel) GetUserList(ctx context.Context, userID int) ([]OrderIte
 			return orders, err
 		}
 		orders = append(orders, order)
+	}
+
+	if err := rows.Err(); err != nil {
+		return orders, err
 	}
 
 	return orders, nil

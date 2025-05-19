@@ -54,7 +54,7 @@ func (h *URLHandler) CreateDraft(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if activeOrder.UserID != activeUser.ID {
+	if activeOrder.userID != activeUser.ID {
 		w.WriteHeader(http.StatusForbidden)
 		return
 	}
@@ -64,7 +64,7 @@ func (h *URLHandler) CreateDraft(w http.ResponseWriter, r *http.Request) {
 	}
 
 	draftModel := draft.DraftModel{DB: h.db}
-	newDraft := &draft.Draft{Number: draftItem.Number, UserID: activeUser.ID, Sum: draftItem.Sum}
+	newDraft := &draft.Draft{Number: draftItem.Number, userID: activeUser.ID, Sum: draftItem.Sum}
 	_, err = draftModel.Create(r.Context(), newDraft)
 	if err != nil {
 		h.StatusServerError(w, r)

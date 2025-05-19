@@ -5,9 +5,9 @@ import (
 	"database/sql"
 )
 
-func (conf *UserModel) FindOne(ctx context.Context, login, password string) (*User, error) {
+func (userModel *UserModel) FindOne(ctx context.Context, login, password string) (*User, error) {
 	var user User
-	err := conf.DB.QueryRowContext(ctx, "SELECT id, username, password FROM users WHERE username = $1", login).Scan(&user.ID, &user.Login, &user.Password)
+	err := userModel.DB.QueryRowContext(ctx, "SELECT id, username, password FROM users WHERE username = $1", login).Scan(&user.ID, &user.Login, &user.Password)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return &User{}, nil

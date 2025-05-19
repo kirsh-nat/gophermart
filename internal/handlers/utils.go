@@ -13,7 +13,7 @@ const secretKey = "supersecretkey"
 
 type Claims struct {
 	jwt.RegisteredClaims
-	UserID int
+	userID int
 }
 
 func (h *URLHandler) checkMethod(w http.ResponseWriter, r *http.Request, method string) bool {
@@ -53,7 +53,7 @@ func buildJWTString(UUID int) (string, error) {
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(tokenExp)),
 		},
-		UserID: UUID,
+		userID: UUID,
 	})
 
 	tokenString, err := token.SignedString([]byte(secretKey))

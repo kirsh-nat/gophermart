@@ -14,7 +14,7 @@ type ModelInterface interface {
 	Create(ctx context.Context, model any) (any, error)
 	Update(ctx context.Context, model any) (any, error)
 	Delete(ctx context.Context, model any) error
-	GetById(ctx context.Context, id int) (any, error)
+	GetByID(ctx context.Context, id int) (any, error)
 }
 
 func NewModel(db *sql.DB) *Model {
@@ -26,8 +26,8 @@ func (s *Model) Create(ctx context.Context, model any) (any, error) {
 
 }
 
-func (s *Model) GetById(ctx context.Context, id int) (any, error) {
-	return s.repo.GetById(ctx, id)
+func (s *Model) GetByID(ctx context.Context, id int) (any, error) {
+	return s.repo.GetByID(ctx, id)
 }
 
 func (s *Model) Update(ctx context.Context, model *any) (any, error) {

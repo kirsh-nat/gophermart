@@ -6,7 +6,7 @@ import (
 
 func SetAppConfig() {
 	setLogger()
-	setDbConfig()
+	setDBConfig()
 	var err error
 	//storage := Storage{}
 	DB, err = sql.Open("pgx", ConnStr)

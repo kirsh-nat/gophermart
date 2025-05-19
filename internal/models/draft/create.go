@@ -12,7 +12,7 @@ func (draftModel *DraftModel) Create(ctx context.Context, anyModel any) (any, er
 	}
 
 	_, err := draftModel.DB.ExecContext(ctx,
-		"INSERT INTO drafts (number, user_id, sum) VALUES ($1, $2, $3)", model.Number, model.UserID, model.Sum)
+		"INSERT INTO drafts (number, user_id, sum) VALUES ($1, $2, $3)", model.Number, model.userID, model.Sum)
 
 	if err != nil {
 		return model, err
