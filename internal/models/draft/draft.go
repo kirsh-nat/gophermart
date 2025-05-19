@@ -9,7 +9,7 @@ import (
 
 type Draft struct {
 	ID          int       `json:"id"`           // уникальный идентификатор
-	userID      int       `json:"user_id"`      // имя пользователя
+	UserID      int       `json:"user_id"`      // имя пользователя
 	Number      string    `json:"number"`       // хэшированный пароль
 	Sum         float32   `json:"sum"`          // потраченная сумма балллов за весь период регистрации
 	ProcessedAt time.Time `json:"processed_at"` // дата создания

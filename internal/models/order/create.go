@@ -21,14 +21,14 @@ func (orderModel *OrderModel) Create(ctx context.Context, anyModel any) (any, er
 			return &Order{}, err
 		}
 	} else {
-		if checkOrder.userID == model.userID {
+		if checkOrder.UserID == model.UserID {
 			return &Order{}, NewUserNumberExistsError("Create Order", err)
 		}
 		return &Order{}, NewNumberExists("Create Order", err)
 	}
 
 	result, err := orderModel.DB.ExecContext(ctx,
-		"INSERT INTO Orders (number, user_id) VALUES ($1, $2)", model.Number, model.userID)
+		"INSERT INTO Orders (number, user_id) VALUES ($1, $2)", model.Number, model.UserID)
 	if err != nil {
 		if pgErr, ok := err.(*pgconn.PgError); ok && pgErr.Code == "23505" {
 			return model, NewNumberExists("Create Order", err)
