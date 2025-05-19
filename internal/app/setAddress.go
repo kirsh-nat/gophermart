@@ -14,12 +14,14 @@ func setAddress() {
 		log.Fatal("Fail to get .env fail")
 	}
 	flag.StringVar(&Address,
-		"a", os.Getenv("RUN_ADDRESS"),
+		"a", "localhost:8080",
 		"Адрес запуска HTTP-сервера",
 	)
 	flag.Parse()
 
-	if adr := os.Getenv("RUN_ADDRESS"); adr != "" {
-		Address = adr
+	if Address == "" {
+		Address = os.Getenv("RUN_ADDRESS")
 	}
+
+	Sugar.Info("Server address: ", Address)
 }
