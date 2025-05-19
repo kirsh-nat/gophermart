@@ -1,8 +1,7 @@
 package orderservices
 
 import (
-	"fmt"
-	"strings"
+	"errors"
 	"unicode"
 
 	"github.com/kirsh-nat/gophermart.git/internal/models/order"
@@ -36,21 +35,11 @@ func luhnCheck(number string) bool {
 }
 
 func CheckNumber(input string) error {
-
-	parts := strings.Fields(input)
-
-	for _, part := range parts {
-		if !isNumeric(part) {
-			fmt.Print(1111)
-			return order.NewNumberFormatError("CheckNumber", fmt.Errorf("'%s' is not a number", part))
-		}
-
-		if luhnCheck(part) {
-			return order.NewNumberFormatError("CheckNumber", fmt.Errorf("'%s' is not a number", part))
-		} else {
-			continue
-		}
+	if !isNumeric(input) {
+		return order.NewNumberFormatError("CheckNumber", errors.New("not a number"))
 	}
-
+	if !luhnCheck(input) {
+		return order.NewNumberFormatError("CheckNumber", errors.New("not a number"))
+	}
 	return nil
 }
