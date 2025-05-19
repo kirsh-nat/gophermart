@@ -4,6 +4,7 @@ import (
 	"embed"
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/kirsh-nat/gophermart.git/cmd/gophermart/migrations"
 	"github.com/kirsh-nat/gophermart.git/internal/app"
@@ -11,6 +12,15 @@ import (
 )
 
 var embedMigrations embed.FS
+
+func init() {
+	dir, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error getting working directory:", err)
+	} else {
+		fmt.Println("Current working directory:", dir)
+	}
+}
 
 func main() {
 	app.SetAppConfig()
