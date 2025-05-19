@@ -14,9 +14,11 @@ var embedMigrations embed.FS
 
 func main() {
 	app.SetAppConfig()
+	app.Sugar.Info("Start server")
 	err := migrations.RunMigrations(app.ConnStr)
 	if err != nil {
-		panic(err)
+		app.Sugar.Fatalw(err.Error(), "event", "start db")
+
 	}
 	handler := handlers.NewURLHandler(app.DB)
 
