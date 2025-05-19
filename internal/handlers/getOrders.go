@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/kirsh-nat/gophermart.git/gophermart/internal/models/order"
+	"github.com/kirsh-nat/gophermart.git/internal/models/order"
 )
 
 func (h *URLHandler) GetOrders(w http.ResponseWriter, r *http.Request) {
@@ -37,7 +37,7 @@ func (h *URLHandler) GetOrders(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(resp)
 }

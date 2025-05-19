@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/kirsh-nat/gophermart.git/gophermart/internal/app"
-	"github.com/kirsh-nat/gophermart.git/gophermart/internal/models/user"
+	"github.com/kirsh-nat/gophermart.git/internal/app"
+	"github.com/kirsh-nat/gophermart.git/internal/models/user"
 )
 
 func (h *URLHandler) GetBalance(w http.ResponseWriter, r *http.Request) {

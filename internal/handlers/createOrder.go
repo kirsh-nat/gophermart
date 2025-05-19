@@ -6,9 +6,9 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/kirsh-nat/gophermart.git/gophermart/internal/app"
-	"github.com/kirsh-nat/gophermart.git/gophermart/internal/models/order"
-	orderservices "github.com/kirsh-nat/gophermart.git/gophermart/internal/services/orderServices"
+	"github.com/kirsh-nat/gophermart.git/internal/app"
+	"github.com/kirsh-nat/gophermart.git/internal/models/order"
+	orderservices "github.com/kirsh-nat/gophermart.git/internal/services/orderServices"
 )
 
 func (h *URLHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {

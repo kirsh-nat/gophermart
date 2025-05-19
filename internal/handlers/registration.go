@@ -6,7 +6,7 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/kirsh-nat/gophermart.git/gophermart/internal/models/user"
+	"github.com/kirsh-nat/gophermart.git/internal/models/user"
 )
 
 func (h *URLHandler) Registration(w http.ResponseWriter, r *http.Request) {

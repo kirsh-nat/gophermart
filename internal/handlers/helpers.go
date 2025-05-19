@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/kirsh-nat/gophermart.git/gophermart/internal/models/user"
+	"github.com/kirsh-nat/gophermart.git/internal/models/user"
 )
 
 var dataUser struct {

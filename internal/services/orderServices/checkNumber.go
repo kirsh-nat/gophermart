@@ -5,7 +5,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/kirsh-nat/gophermart.git/gophermart/internal/models/order"
+	"github.com/kirsh-nat/gophermart.git/internal/models/order"
 )
 
 func isNumeric(s string) bool {

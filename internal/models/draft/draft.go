@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/kirsh-nat/gophermart.git/gophermart/internal/models"
+	"github.com/kirsh-nat/gophermart.git/internal/models"
 )
 
 type Draft struct {

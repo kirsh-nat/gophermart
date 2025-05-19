@@ -4,11 +4,9 @@ import (
 	"embed"
 	"net/http"
 
-	_ "github.com/jackc/pgx/v5/stdlib"
-	"github.com/kirsh-nat/gophermart.git/gophermart/cmd/gophermart/migrations"
-	_ "github.com/kirsh-nat/gophermart.git/gophermart/cmd/gophermart/migrations"
-	"github.com/kirsh-nat/gophermart.git/gophermart/internal/app"
-	"github.com/kirsh-nat/gophermart.git/gophermart/internal/handlers"
+	"github.com/kirsh-nat/gophermart.git/cmd/gophermart/migrations"
+	"github.com/kirsh-nat/gophermart.git/internal/app"
+	"github.com/kirsh-nat/gophermart.git/internal/handlers"
 )
 
 var embedMigrations embed.FS

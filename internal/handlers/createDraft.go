@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/kirsh-nat/gophermart.git/gophermart/internal/models/draft"
-	"github.com/kirsh-nat/gophermart.git/gophermart/internal/models/order"
-	"github.com/kirsh-nat/gophermart.git/gophermart/internal/models/user"
+	"github.com/kirsh-nat/gophermart.git/internal/models/draft"
+	"github.com/kirsh-nat/gophermart.git/internal/models/order"
+	"github.com/kirsh-nat/gophermart.git/internal/models/user"
 )
 
 type DraftItem struct {
