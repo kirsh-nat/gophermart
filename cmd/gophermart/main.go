@@ -33,6 +33,6 @@ func main() {
 
 func run(handler *handlers.URLHandler) error {
 	mux := handlers.Routes(handler)
-	fmt.Println("Server is running on http://localhost:8080")
-	return http.ListenAndServe("localhost:8080", mux)
+	fmt.Println("Server is running on", app.Address)
+	return http.ListenAndServe(app.Address, mux)
 }
