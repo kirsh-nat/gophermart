@@ -14,10 +14,10 @@ type AuthorizationError struct {
 	Err   error
 }
 
-// var (
-// 	ErrorURLNotFound = errors.New("User not found")
-// 	ErrorURLDeleted  = errors.New("U")
-// )
+type UserNotFoundError struct {
+	level string
+	Err   error
+}
 
 func (le *UserExistsError) Error() string {
 	return fmt.Sprintf("[%s] %v", le.level, le.Err)
@@ -36,6 +36,17 @@ func (le *AuthorizationError) Error() string {
 
 func NewAuthorizationError(label string, err error) error {
 	return &AuthorizationError{
+		level: strings.ToUpper(label),
+		Err:   err,
+	}
+}
+
+func (le *UserNotFoundError) Error() string {
+	return fmt.Sprintf("[%s] %v", le.level, le.Err)
+}
+
+func NewUserNotFoundError(label string, err error) error {
+	return &UserNotFoundError{
 		level: strings.ToUpper(label),
 		Err:   err,
 	}

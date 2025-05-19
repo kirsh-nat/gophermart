@@ -19,6 +19,16 @@ type NumberFormatError struct {
 	Err   error
 }
 
+type OrderNotFoundError struct {
+	level string
+	Err   error
+}
+
+type InsufficientFundsError struct {
+	level string
+	Err   error
+}
+
 func (le *UserNumberExistsError) Error() string {
 	return fmt.Sprintf("[%s] %v", le.level, le.Err)
 }
@@ -47,6 +57,28 @@ func (le *NumberFormatError) Error() string {
 
 func NewNumberFormatError(label string, err error) error {
 	return &NumberFormatError{
+		level: strings.ToUpper(label),
+		Err:   err,
+	}
+}
+
+func (le *OrderNotFoundError) Error() string {
+	return fmt.Sprintf("[%s] %v", le.level, le.Err)
+}
+
+func NewOrderNotFoundError(label string, err error) error {
+	return &OrderNotFoundError{
+		level: strings.ToUpper(label),
+		Err:   err,
+	}
+}
+
+func (le *InsufficientFundsError) Error() string {
+	return fmt.Sprintf("[%s] %v", le.level, le.Err)
+}
+
+func NewInsufficientFundsError(label string, err error) error {
+	return &InsufficientFundsError{
 		level: strings.ToUpper(label),
 		Err:   err,
 	}

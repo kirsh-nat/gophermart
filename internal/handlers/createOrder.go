@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/kirsh-nat/gophermart.git/gophermart/internal/app"
 	"github.com/kirsh-nat/gophermart.git/gophermart/internal/models/order"
 	orderservices "github.com/kirsh-nat/gophermart.git/gophermart/internal/services/orderServices"
 )
@@ -61,6 +62,7 @@ func (h *URLHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusConflict)
 			return
 		}
+		app.Sugar.Error(err)
 		h.StatusServerError(w, r)
 		return
 	}

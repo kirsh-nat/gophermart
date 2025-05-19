@@ -5,12 +5,12 @@ import (
 	"database/sql"
 )
 
-func (orderModel *OrderModel) getByNumber(ctx context.Context, number string) (*Order, error) {
+func (orderModel OrderModel) GetByNumber(ctx context.Context, number string) (*Order, error) {
 	var order Order
-	err := orderModel.DB.QueryRowContext(ctx, "SELECT id, user_id, number FROM orders WHERE number = $1", number).Scan(&order.ID, &order.UserID, &order.Number)
+	err := orderModel.DB.QueryRowContext(ctx, "SELECT id, user_id, number, accural FROM orders WHERE number = $1", number).Scan(&order.ID, &order.UserID, &order.Number, &order.Accural)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return &Order{}, nil
+			return &Order{}, NewOrderNotFoundError("Order not found", err)
 		}
 		return &Order{}, err
 	}

@@ -21,7 +21,6 @@ func luhnCheck(number string) bool {
 	sum := 0
 	double := false
 
-	// Идём с конца строки
 	for i := len(number) - 1; i >= 0; i-- {
 		digit := int(number[i] - '0')
 		if double {
@@ -42,13 +41,14 @@ func CheckNumber(input string) error {
 
 	for _, part := range parts {
 		if !isNumeric(part) {
+			fmt.Print(1111)
 			return order.NewNumberFormatError("CheckNumber", fmt.Errorf("'%s' is not a number", part))
 		}
 
 		if luhnCheck(part) {
-			continue
-		} else {
 			return order.NewNumberFormatError("CheckNumber", fmt.Errorf("'%s' is not a number", part))
+		} else {
+			continue
 		}
 	}
 

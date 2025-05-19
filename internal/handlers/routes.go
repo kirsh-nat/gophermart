@@ -12,6 +12,10 @@ func Routes(handler *URLHandler) *chi.Mux {
 	r.Post("/api/user/login", http.HandlerFunc(handler.Authentication))
 	r.Post("/api/user/orders", http.HandlerFunc(handler.CreateOrder))
 	r.Get("/api/user/orders", http.HandlerFunc(handler.GetOrders))
+	r.Get("/api/user/balance", http.HandlerFunc(handler.GetBalance))
+	r.Get("/api/user/withdrawals", http.HandlerFunc(handler.GetDrafts))
+	r.Post("/api/user/balance/withdraw", http.HandlerFunc(handler.CreateDraft))
+
 	// r.Get("/{id}", handler.Get)
 	// r.Post("/api/shorten", http.HandlerFunc(Middleware(http.HandlerFunc(handler.GetAPIShorten))))
 	// r.Get("/ping", http.HandlerFunc(Middleware(http.HandlerFunc(handler.PingHandler))))
