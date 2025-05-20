@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/kirsh-nat/gophermart.git/internal/models/user"
@@ -14,39 +15,21 @@ var dataUser struct {
 	Password string `json:"password"`
 }
 
-// type URLHandler struct {
-// 	service models.Model
-// }
-
-// func NewURLHandler(service *models.Model) *URLHandler {
-// 	return &URLHandler{service: *service}
-// }
-
 type URLHandler struct {
 	db *sql.DB
-	// service models.Model
 }
 
-// NewURLHandler returns a new instance of URLHandler with the given service.
-//
-// The service field of the returned URLHandler is a copy of the given service.
+const tokenExp = time.Hour * 3
+const secretKey = "supersecretkey"
+
+type Claims struct {
+	jwt.RegisteredClaims
+	UserID int `json:"user_id"`
+}
+
 func NewURLHandler(db *sql.DB) *URLHandler {
 	return &URLHandler{db: db}
 }
-
-// func (h *URLHandler) setCookieToken(w http.ResponseWriter, r *http.Request) (*user.User, bool) {
-// 	cookieToken, err := r.Cookie("token")
-// 	if err != nil || cookieToken == nil {
-// 		return h.createUserAndSetCookie(w, r)
-// 	}
-
-// 	user, err := user.GetUser(cookieToken.Value)
-// 	if err != nil {
-// 		return h.createUserAndSetCookie(w)
-// 	}
-
-// 	return user, true
-// }
 
 func (h *URLHandler) setCookieToken(user *user.User, w http.ResponseWriter) (*user.User, bool) {
 	token, err := createToken(user)
@@ -79,9 +62,9 @@ func (h *URLHandler) getUserFromToken(w http.ResponseWriter, r *http.Request) (*
 		return &user.User{}, false
 	}
 
-	user := foundUser.(*user.User)
+	found := foundUser.(*user.User)
 
-	return user, true
+	return found, true
 }
 
 func getuserID(tokenString string) (int, error) {
@@ -98,8 +81,33 @@ func getuserID(tokenString string) (int, error) {
 	}
 
 	if !token.Valid {
-		return 0, err
+		return 0, fmt.Errorf("invalid token")
 	}
 
-	return claims.userID, nil
+	return claims.UserID, nil
+}
+func createToken(user *user.User) (string, error) {
+	fmt.Println("user.ID create tokennnn", user.ID)
+	token, err := buildJWTString(user.ID)
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
+
+}
+
+func buildJWTString(UUID int) (string, error) {
+	claims := Claims{
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(tokenExp)),
+		},
+		UserID: UUID,
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString([]byte(secretKey))
+	if err != nil {
+		return "", err
+	}
+	return tokenString, nil
 }

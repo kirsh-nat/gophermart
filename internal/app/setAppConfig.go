@@ -8,6 +8,7 @@ func SetAppConfig() {
 	setLogger()
 	setDBConfig()
 	setAddress()
+	setAcrAddress()
 	var err error
 	DB, err = sql.Open("pgx", ConnStr)
 	if err != nil {
