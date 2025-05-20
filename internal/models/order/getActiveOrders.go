@@ -5,9 +5,9 @@ import (
 	"database/sql"
 )
 
-func GetActiveOrders(sqlDb *sql.DB, ctx context.Context) ([]string, error) {
+func GetActiveOrders(sqlDB *sql.DB, ctx context.Context) ([]string, error) {
 	var orderNums []string
-	rows, err := sqlDb.QueryContext(ctx, "SELECT number FROM orders WHERE status in ($1, $2, $3)", REGISTERED, PROCESSING, NEW)
+	rows, err := sqlDB.QueryContext(ctx, "SELECT number FROM orders WHERE status in ($1, $2, $3)", REGISTERED, PROCESSING, NEW)
 	if err != nil {
 		return nil, err
 	}

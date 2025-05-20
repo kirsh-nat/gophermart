@@ -6,8 +6,8 @@ import (
 	"log"
 )
 
-func Worker(sqlDb *sql.DB, ctx context.Context, acrAddress string) {
-	orderNumbers, err := GetActiveOrders(sqlDb, ctx)
+func Worker(sqlDB *sql.DB, ctx context.Context, acrAddress string) {
+	orderNumbers, err := GetActiveOrders(sqlDB, ctx)
 	if err != nil {
 		return
 	}
@@ -24,7 +24,7 @@ func Worker(sqlDb *sql.DB, ctx context.Context, acrAddress string) {
 			continue
 		}
 
-		if updateErr := UpdateStatus(sqlDb, ctx, result); updateErr != nil {
+		if updateErr := UpdateStatus(sqlDB, ctx, result); updateErr != nil {
 			log.Printf("Error updating status for order %s: %v", orderNum, updateErr)
 		}
 	}
