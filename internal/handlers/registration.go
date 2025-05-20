@@ -45,11 +45,11 @@ func (h *URLHandler) Registration(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// user, ok = h.setCookieToken(user, w)
-	// if !ok {
-	// 	w.WriteHeader(http.StatusBadRequest)
-	// 	w.Write([]byte("Something went wrong"))
-	// }
+	user, ok = h.setCookieToken(user, w)
+	if !ok {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Something went wrong"))
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

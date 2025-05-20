@@ -42,11 +42,13 @@ func (h *URLHandler) setCookieToken(user *user.User, w http.ResponseWriter) (*us
 		Value: token,
 		Path:  "/",
 	})
+	fmt.Println("set cookieToken: ", token)
 	return user, true
 }
 
 func (h *URLHandler) getUserFromToken(w http.ResponseWriter, r *http.Request) (*user.User, bool) {
 	cookieToken, err := r.Cookie("token")
+	fmt.Println("get cookieToken: ", cookieToken)
 	if err != nil || cookieToken == nil {
 		return &user.User{}, false
 	}
