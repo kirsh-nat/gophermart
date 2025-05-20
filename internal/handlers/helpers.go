@@ -24,7 +24,7 @@ const secretKey = "supersecretkey"
 
 type Claims struct {
 	jwt.RegisteredClaims
-	UserID int //`json:"user_id"`
+	UserID int
 }
 
 func NewURLHandler(db *sql.DB) *URLHandler {
@@ -42,7 +42,6 @@ func (h *URLHandler) setCookieToken(user *user.User, w http.ResponseWriter) (*us
 		Value: token,
 		Path:  "/",
 	})
-	fmt.Println("kieToken: ", token)
 	return user, true
 }
 
@@ -52,23 +51,23 @@ func (h *URLHandler) getUserFromToken(w http.ResponseWriter, r *http.Request) (*
 		return &user.User{}, false
 	}
 
-	userId, err := getUserID(cookieToken.Value)
+	userID, err := getuserID(cookieToken.Value)
 	if err != nil {
-		return &user.User{}, false
+		return &user.User{ID: userID}, false
 	}
 
 	userModel := user.NewUserModel(h.db)
-	foundUser, err := userModel.GetByID(r.Context(), userId)
+	foundUser, err := userModel.GetByID(r.Context(), userID)
 	if err != nil {
 		return &user.User{}, false
 	}
 
-	user := foundUser.(*user.User)
+	found := foundUser.(*user.User)
 
-	return user, true
+	return found, true
 }
 
-func getUserID(tokenString string) (int, error) {
+func getuserID(tokenString string) (int, error) {
 	claims := &Claims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims,
 		func(t *jwt.Token) (interface{}, error) {
@@ -82,12 +81,11 @@ func getUserID(tokenString string) (int, error) {
 	}
 
 	if !token.Valid {
-		return 0, err
+		return 0, fmt.Errorf("invalid token")
 	}
 
 	return claims.UserID, nil
 }
-
 func createToken(user *user.User) (string, error) {
 	token, err := buildJWTString(user.ID)
 	if err != nil {
@@ -99,17 +97,16 @@ func createToken(user *user.User) (string, error) {
 }
 
 func buildJWTString(UUID int) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
+	claims := Claims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(tokenExp)),
 		},
 		UserID: UUID,
-	})
-
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString([]byte(secretKey))
 	if err != nil {
 		return "", err
 	}
-
 	return tokenString, nil
 }

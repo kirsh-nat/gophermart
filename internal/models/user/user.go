@@ -21,6 +21,5 @@ type UserModel struct {
 }
 
 func NewUserModel(db *sql.DB) models.ModelInterface {
-	//return &models.Model{db: db}
 	return &UserModel{DB: db}
 }

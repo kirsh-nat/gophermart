@@ -10,7 +10,6 @@ import (
 
 var embedMigrations embed.FS
 
-// TODO: через уже конект созданный подключаемсяя к базе
 func RunMigrations(connStr string) error {
 	var db *sql.DB
 

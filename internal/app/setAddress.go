@@ -6,10 +6,6 @@ import (
 )
 
 func setAddress() {
-	//	err := godotenv.Load("/opt/projects/gophermart/gophermart/cmd/gophermart/.env")
-	// if err != nil {
-	// 	log.Fatal("Fail to get .env fail")
-	// }
 	flag.StringVar(&Address,
 		"a", "localhost:8080",
 		"Адрес запуска HTTP-сервера",

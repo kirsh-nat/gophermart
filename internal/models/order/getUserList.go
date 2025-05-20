@@ -8,7 +8,7 @@ import (
 
 type OrderItem struct {
 	Number    string    `json:"number"`
-	Accural   float32   `json:"accural"` // TODO: только если существует
+	Accural   float32   `json:"accural"`
 	Status    string    `json:"status"`
 	UreatedAt time.Time `json:"updated_at"`
 }
