@@ -10,7 +10,7 @@ func (userModel *UserModel) FindOne(ctx context.Context, login, password string)
 	err := userModel.DB.QueryRowContext(ctx, "SELECT id, username, password FROM users WHERE username = $1", login).Scan(&user.ID, &user.Login, &user.Password)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return &User{}, nil
+			return &User{}, NewAuthorizationError("Cannot find user", err)
 		}
 		return &User{}, err
 	}

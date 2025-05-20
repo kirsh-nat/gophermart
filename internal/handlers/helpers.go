@@ -48,29 +48,27 @@ func (h *URLHandler) setCookieToken(user *user.User, w http.ResponseWriter) (*us
 
 func (h *URLHandler) getUserFromToken(w http.ResponseWriter, r *http.Request) (*user.User, bool) {
 	cookieToken, err := r.Cookie("token")
-	fmt.Println("kieToken: ", cookieToken)
 	if err != nil || cookieToken == nil {
 		return &user.User{}, false
 	}
 
-	userID, err := getuserID(cookieToken.Value)
-	if err != nil {
-		fmt.Println("getUser id", err)
-		return &user.User{ID: userID}, false
-	}
-
-	userModel := user.NewUserModel(h.db)
-	foundUser, err := userModel.GetByID(r.Context(), userID)
+	userId, err := getUserID(cookieToken.Value)
 	if err != nil {
 		return &user.User{}, false
 	}
 
-	found := foundUser.(*user.User)
+	userModel := user.NewUserModel(h.db)
+	foundUser, err := userModel.GetByID(r.Context(), userId)
+	if err != nil {
+		return &user.User{}, false
+	}
 
-	return found, true
+	user := foundUser.(*user.User)
+
+	return user, true
 }
 
-func getuserID(tokenString string) (int, error) {
+func getUserID(tokenString string) (int, error) {
 	claims := &Claims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims,
 		func(t *jwt.Token) (interface{}, error) {
@@ -84,11 +82,12 @@ func getuserID(tokenString string) (int, error) {
 	}
 
 	if !token.Valid {
-		return 0, fmt.Errorf("invalid token")
+		return 0, err
 	}
 
 	return claims.UserID, nil
 }
+
 func createToken(user *user.User) (string, error) {
 	token, err := buildJWTString(user.ID)
 	if err != nil {
@@ -100,16 +99,17 @@ func createToken(user *user.User) (string, error) {
 }
 
 func buildJWTString(UUID int) (string, error) {
-	claims := Claims{
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(tokenExp)),
 		},
 		UserID: UUID,
-	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	})
+
 	tokenString, err := token.SignedString([]byte(secretKey))
 	if err != nil {
 		return "", err
 	}
+
 	return tokenString, nil
 }
