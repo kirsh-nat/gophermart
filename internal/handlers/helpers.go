@@ -55,7 +55,8 @@ func (h *URLHandler) getUserFromToken(w http.ResponseWriter, r *http.Request) (*
 
 	userID, err := getuserID(cookieToken.Value)
 	if err != nil {
-		return &user.User{}, false
+		fmt.Println("getUser id", err)
+		return &user.User{ID: userID}, false
 	}
 
 	userModel := user.NewUserModel(h.db)
