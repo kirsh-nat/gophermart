@@ -87,7 +87,6 @@ func getuserID(tokenString string) (int, error) {
 	return claims.UserID, nil
 }
 func createToken(user *user.User) (string, error) {
-	fmt.Println("user.ID create tokennnn", user.ID)
 	token, err := buildJWTString(user.ID)
 	if err != nil {
 		return "", err
