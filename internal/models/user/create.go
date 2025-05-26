@@ -28,5 +28,5 @@ func (userModel *UserModel) Create(ctx context.Context, model any) (any, error) 
 		return user, err
 	}
 
-	return user, nil
+	return userModel.FindOne(ctx, user.Login, user.Password)
 }
