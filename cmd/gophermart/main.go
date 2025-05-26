@@ -4,7 +4,6 @@ import (
 	"context"
 	"embed"
 	"net/http"
-	"time"
 
 	"github.com/kirsh-nat/gophermart.git/cmd/gophermart/migrations"
 	"github.com/kirsh-nat/gophermart.git/internal/app"
@@ -26,7 +25,7 @@ func main() {
 	go func() {
 		for {
 			order.Worker(app.DB, context.Background(), app.AccrualAddress)
-			time.Sleep(3 * time.Second)
+			//	time.Sleep(3 * time.Second)
 		}
 	}()
 

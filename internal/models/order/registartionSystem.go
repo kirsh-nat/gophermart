@@ -10,13 +10,13 @@ import (
 
 func RegistrationSystemOrder(orderID, acrAddress string) error {
 	url := fmt.Sprintf("http://%s/api/orders", acrAddress)
-	good := GoodDesc{
-		Description: "test1",
-		Price:       8885,
-	}
+	// good := GoodDesc{
+	// 	Description: "test1",
+	// 	Price:       8885,
+	// }
 	orderReq := OrderRequest{
 		Order: orderID,
-		Good:  []GoodDesc{good},
+		//		Good:  []GoodDesc{good},
 	}
 
 	body, err := json.Marshal(orderReq)
@@ -31,7 +31,7 @@ func RegistrationSystemOrder(orderID, acrAddress string) error {
 
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusAccepted {
 		return errors.New("invalid order")
 	}
 
