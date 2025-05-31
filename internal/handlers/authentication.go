@@ -6,7 +6,7 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/kirsh-nat/gophermart.git/internal/models/user"
+	userservices "github.com/kirsh-nat/gophermart.git/internal/services/userServices"
 )
 
 func (h *URLHandler) Authentication(w http.ResponseWriter, r *http.Request) {
@@ -26,10 +26,9 @@ func (h *URLHandler) Authentication(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userModel := &user.UserModel{DB: h.db}
-	u, err := userModel.FindOne(r.Context(), dataUser.Login, dataUser.Password)
+	u, err := userservices.FindOne(h.db, r.Context(), dataUser.Login, dataUser.Password)
 	if err != nil {
-		var dErr *user.AuthorizationError
+		var dErr *userservices.AuthorizationError
 		if errors.As(err, &dErr) {
 			w.WriteHeader(http.StatusUnauthorized)
 			return

@@ -1,4 +1,4 @@
-package user
+package userservices
 
 import (
 	"context"
@@ -10,14 +10,15 @@ type Invoice struct {
 	Spent   float32 `json:"withdrawn"`
 }
 
-func (userModel *UserModel) GetBalance(ctx context.Context, id int) (Invoice, error) {
+func GetBalance(DB *sql.DB, ctx context.Context, id int) (Invoice, error) {
 	var invoice Invoice
-	err := userModel.DB.QueryRowContext(ctx, "SELECT balance, spent FROM users WHERE id = $1", id).Scan(&invoice.Balance, &invoice.Spent)
+	err := DB.QueryRowContext(ctx, "SELECT balance, spent FROM users WHERE id = $1", id).Scan(&invoice.Balance, &invoice.Spent)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return Invoice{}, nil
 		}
 		return Invoice{}, err
 	}
+
 	return invoice, nil
 }

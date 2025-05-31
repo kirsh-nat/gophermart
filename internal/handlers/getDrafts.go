@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/kirsh-nat/gophermart.git/internal/app"
-	"github.com/kirsh-nat/gophermart.git/internal/models/draft"
+	draftservices "github.com/kirsh-nat/gophermart.git/internal/services/draftServices"
 )
 
 func (h *URLHandler) GetDrafts(w http.ResponseWriter, r *http.Request) {
@@ -20,8 +20,7 @@ func (h *URLHandler) GetDrafts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	draftModel := &draft.DraftModel{DB: h.db}
-	drafts, err := draftModel.GetUserList(r.Context(), user.ID)
+	drafts, err := draftservices.GetUserList(h.db, r.Context(), user.ID)
 	if err != nil {
 		app.Sugar.Errorw(err.Error(), "event", "get drafts")
 		h.StatusServerError(w, r)

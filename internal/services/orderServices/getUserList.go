@@ -1,21 +1,15 @@
-package order
+package orderservices
 
 import (
 	"context"
 	"database/sql"
-	"time"
+
+	"github.com/kirsh-nat/gophermart.git/internal/models"
 )
 
-type OrderItem struct {
-	Number    string    `json:"number"`
-	Accural   float32   `json:"accural"`
-	Status    string    `json:"status"`
-	UreatedAt time.Time `json:"updated_at"`
-}
-
-func (orderModel *OrderModel) GetUserList(ctx context.Context, userID int) ([]OrderItem, error) {
-	var orders []OrderItem
-	rows, err := orderModel.DB.QueryContext(ctx,
+func GetUserList(DB *sql.DB, ctx context.Context, userID int) ([]models.OrderItem, error) {
+	var orders []models.OrderItem
+	rows, err := DB.QueryContext(ctx,
 		"SELECT  number, status, accural, updated_at FROM orders WHERE user_id = $1 ORDER BY updated_at desc", userID)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -27,7 +21,7 @@ func (orderModel *OrderModel) GetUserList(ctx context.Context, userID int) ([]Or
 	defer rows.Close()
 
 	for rows.Next() {
-		var order OrderItem
+		var order models.OrderItem
 		if err := rows.Scan(&order.Number, &order.Status, &order.Accural, &order.UreatedAt); err != nil {
 			return orders, err
 		}

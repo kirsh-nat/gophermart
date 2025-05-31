@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/kirsh-nat/gophermart.git/internal/app"
-	"github.com/kirsh-nat/gophermart.git/internal/models/user"
+	userservices "github.com/kirsh-nat/gophermart.git/internal/services/userServices"
 )
 
 func (h *URLHandler) GetBalance(w http.ResponseWriter, r *http.Request) {
@@ -20,8 +20,7 @@ func (h *URLHandler) GetBalance(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userModel := &user.UserModel{DB: h.db}
-	balance, err := userModel.GetBalance(r.Context(), activeUser.ID)
+	balance, err := userservices.GetBalance(h.db, r.Context(), activeUser.ID)
 	if err != nil {
 		app.Sugar.Errorw(err.Error(), "event", "get balance")
 		h.StatusServerError(w, r)

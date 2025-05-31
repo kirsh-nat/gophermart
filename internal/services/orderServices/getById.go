@@ -1,19 +1,21 @@
-package order
+package orderservices
 
 import (
 	"context"
 	"database/sql"
+
+	"github.com/kirsh-nat/gophermart.git/internal/models"
 )
 
-func (orderModel *OrderModel) GetByID(ctx context.Context, id int) (any, error) {
-	var order Order
-	err := orderModel.DB.QueryRowContext(ctx,
+func GetByID(DB *sql.DB, ctx context.Context, id int) (*models.Order, error) {
+	var order models.Order
+	err := DB.QueryRowContext(ctx,
 		"SELECT id, user_id, number, status, updated_at FROM orders WHERE user_id = $1", id).Scan(&order.ID, &order.UserID, &order.Number, &order.Status, &order.UreatedAt)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return &Order{}, nil
+			return nil, nil
 		}
-		return &Order{}, err
+		return nil, err
 	}
 
 	return &order, nil

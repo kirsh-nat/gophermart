@@ -7,7 +7,6 @@ import (
 	"net/http"
 
 	"github.com/kirsh-nat/gophermart.git/internal/app"
-	"github.com/kirsh-nat/gophermart.git/internal/models/order"
 	orderservices "github.com/kirsh-nat/gophermart.git/internal/services/orderServices"
 )
 
@@ -49,15 +48,14 @@ func (h *URLHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	orderModel := order.NewOrderModel(h.db)
-	_, err = orderModel.Create(r.Context(), &order.Order{UserID: user.ID, Number: string(reqNumber)})
+	_, err = orderservices.Create(h.db, r.Context(), string(reqNumber), user.ID)
 	if err != nil {
-		var userErr *order.UserNumberExistsError
+		var userErr *orderservices.UserNumberExistsError
 		if errors.As(err, &userErr) {
 			w.WriteHeader(http.StatusOK)
 			return
 		}
-		var dErr *order.NumberExists
+		var dErr *orderservices.NumberExists
 		if errors.As(err, &dErr) {
 			w.WriteHeader(http.StatusConflict)
 			return

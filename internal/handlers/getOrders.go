@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/kirsh-nat/gophermart.git/internal/models/order"
+	orderservices "github.com/kirsh-nat/gophermart.git/internal/services/orderServices"
 )
 
 func (h *URLHandler) GetOrders(w http.ResponseWriter, r *http.Request) {
@@ -19,8 +19,7 @@ func (h *URLHandler) GetOrders(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	orderModel := &order.OrderModel{DB: h.db}
-	orders, err := orderModel.GetUserList(r.Context(), user.ID)
+	orders, err := orderservices.GetUserList(h.db, r.Context(), user.ID)
 	if err != nil {
 		h.StatusServerError(w, r)
 		return

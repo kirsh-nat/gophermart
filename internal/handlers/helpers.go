@@ -7,7 +7,8 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/kirsh-nat/gophermart.git/internal/models/user"
+	"github.com/kirsh-nat/gophermart.git/internal/models"
+	userservices "github.com/kirsh-nat/gophermart.git/internal/services/userServices"
 )
 
 var dataUser struct {
@@ -31,7 +32,7 @@ func NewURLHandler(db *sql.DB) *URLHandler {
 	return &URLHandler{db: db}
 }
 
-func (h *URLHandler) setCookieToken(user *user.User, w http.ResponseWriter) (*user.User, bool) {
+func (h *URLHandler) setCookieToken(user *models.User, w http.ResponseWriter) (*models.User, bool) {
 	token, err := createToken(user)
 	if err != nil {
 		return nil, false
@@ -45,26 +46,26 @@ func (h *URLHandler) setCookieToken(user *user.User, w http.ResponseWriter) (*us
 	return user, true
 }
 
-func (h *URLHandler) getUserFromToken(w http.ResponseWriter, r *http.Request) (*user.User, bool) {
+func (h *URLHandler) getUserFromToken(w http.ResponseWriter, r *http.Request) (*models.User, bool) {
 	cookieToken, err := r.Cookie("token")
 	if err != nil || cookieToken == nil {
-		return &user.User{}, false
+		return &models.User{}, false
 	}
 
 	userID, err := getuserID(cookieToken.Value)
 	if err != nil {
-		return &user.User{ID: userID}, false
+		return &models.User{ID: userID}, false
 	}
 
-	userModel := user.NewUserModel(h.db)
-	foundUser, err := userModel.GetByID(r.Context(), userID)
+	//userModel := user.NewUserModel(h.db)
+	foundUser, err := userservices.GetByID(h.db, r.Context(), userID)
 	if err != nil {
-		return &user.User{}, false
+		return &models.User{}, false
 	}
 
-	found := foundUser.(*user.User)
+	//found := foundUser.(*models.User)
 
-	return found, true
+	return foundUser, true
 }
 
 func getuserID(tokenString string) (int, error) {
@@ -86,7 +87,7 @@ func getuserID(tokenString string) (int, error) {
 
 	return claims.UserID, nil
 }
-func createToken(user *user.User) (string, error) {
+func createToken(user *models.User) (string, error) {
 	token, err := buildJWTString(user.ID)
 	if err != nil {
 		return "", err

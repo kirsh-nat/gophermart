@@ -3,8 +3,6 @@ package orderservices
 import (
 	"errors"
 	"unicode"
-
-	"github.com/kirsh-nat/gophermart.git/internal/models/order"
 )
 
 func isNumeric(s string) bool {
@@ -36,10 +34,10 @@ func luhnCheck(number string) bool {
 
 func CheckNumber(input string) error {
 	if !isNumeric(input) {
-		return order.NewNumberFormatError("CheckNumber", errors.New("not a number"))
+		return NewNumberFormatError("CheckNumber", errors.New("not a number"))
 	}
 	if !luhnCheck(input) {
-		return order.NewNumberFormatError("CheckNumber", errors.New("not a number"))
+		return NewNumberFormatError("CheckNumber", errors.New("not a number"))
 	}
 	return nil
 }

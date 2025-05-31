@@ -4,12 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 
-	"github.com/kirsh-nat/gophermart.git/internal/models/draft"
-	"github.com/kirsh-nat/gophermart.git/internal/models/order"
-	"github.com/kirsh-nat/gophermart.git/internal/models/user"
+	draftservices "github.com/kirsh-nat/gophermart.git/internal/services/draftServices"
+	orderservices "github.com/kirsh-nat/gophermart.git/internal/services/orderServices"
+	userservices "github.com/kirsh-nat/gophermart.git/internal/services/userServices"
 )
 
 type DraftItem struct {
@@ -42,10 +41,9 @@ func (h *URLHandler) CreateDraft(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	orderModel := order.OrderModel{DB: h.db}
-	activeOrder, err := orderModel.GetByNumber(r.Context(), draftItem.Number)
+	activeOrder, err := orderservices.GetByNumber(h.db, r.Context(), draftItem.Number)
 	if err != nil {
-		var notFoundErr *order.OrderNotFoundError
+		var notFoundErr *orderservices.OrderNotFoundError
 		if errors.As(err, &notFoundErr) {
 			w.WriteHeader(http.StatusUnprocessableEntity)
 			return
@@ -63,19 +61,14 @@ func (h *URLHandler) CreateDraft(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	draftModel := draft.DraftModel{DB: h.db}
-	newDraft := &draft.Draft{Number: draftItem.Number, UserID: activeUser.ID, Sum: draftItem.Sum}
-	_, err = draftModel.Create(r.Context(), newDraft)
+	_, err = draftservices.CreateDraft(h.db, r.Context(), draftItem.Number, activeUser.ID, draftItem.Sum)
 	if err != nil {
 		h.StatusServerError(w, r)
 		return
 	}
 
-	userModel := user.UserModel{DB: h.db}
-	err = userModel.UpdateBalance(r.Context(), activeUser.ID, draftItem.Sum)
+	err = userservices.UpdateSpent(h.db, r.Context(), activeUser.ID, draftItem.Sum)
 	if err != nil {
-		fmt.Println(err, "ERrOR")
-
 		h.StatusServerError(w, r)
 		return
 	}

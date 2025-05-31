@@ -1,27 +1,13 @@
-package order
+package systemservices
 
 import (
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
+
+	"github.com/kirsh-nat/gophermart.git/internal/models/order"
 )
-
-type Result struct {
-	Order   string `json:"order"`
-	Status  string `json:"status"`
-	Accrual int    `json:"accrual"`
-}
-
-type OrderRequest struct {
-	Order string `json:"order"`
-	Good  []GoodDesc
-}
-
-type GoodDesc struct {
-	Description string `json:"description"`
-	Price       int    `json:"price"`
-}
 
 func NotifyAccrualSystem(orderID, acrAddress string) (Result, error) {
 	url := fmt.Sprintf("http://%s/api/orders/%s", acrAddress, orderID)
@@ -45,7 +31,7 @@ func NotifyAccrualSystem(orderID, acrAddress string) (Result, error) {
 	case http.StatusNoContent:
 		err := RegistrationSystemOrder(orderID, acrAddress)
 		if err != nil {
-			return Result{Order: orderID, Status: INVALID}, nil
+			return Result{Order: orderID, Status: order.INVALID}, nil
 		}
 		return Result{}, nil
 	}
