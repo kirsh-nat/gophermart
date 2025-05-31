@@ -17,8 +17,8 @@ func Withdrawn(DB *sql.DB, ctx context.Context, number string, userID int, sum f
 		return err
 	}
 
-	if (sum > order.Accural) || (sum < 0) {
-		return NewInsufficientFundsError("Insufficient funds", err)
+	if err = checkBalance(sum, order.Accural); err != nil {
+		return err
 	}
 
 	newSum := order.Accural - sum

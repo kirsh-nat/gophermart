@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 
 	userservices "github.com/kirsh-nat/gophermart.git/internal/services/userServices"
@@ -27,9 +26,7 @@ func (h *URLHandler) Registration(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//userModel := user.NewUserModel(h.db)
-	//u, err := userModel.Create(r.Context(), &user.User{Login: dataUser.Login, Password: dataUser.Password})
-	user, err := userservices.CreateUser(h.db, r.Context(), dataUser.Login, dataUser.Password) //userModel.Create(r.Context(), &user.User{Login: dataUser.Login, Password: dataUser.Password})
+	user, err := userservices.CreateUser(h.db, r.Context(), dataUser.Login, dataUser.Password)
 	if err != nil {
 		var dErr *userservices.UserExistsError
 		if errors.As(err, &dErr) {
@@ -37,16 +34,9 @@ func (h *URLHandler) Registration(w http.ResponseWriter, r *http.Request) {
 			return
 
 		}
-		fmt.Print("error: %v", err)
 		h.StatusServerError(w, r)
 		return
 	}
-
-	// user, ok := (u).(*user.User)
-	// if !ok {
-	// 	h.StatusServerError(w, r)
-	// 	return
-	// }
 
 	user, ok := h.setCookieToken(user, w)
 	if !ok {
