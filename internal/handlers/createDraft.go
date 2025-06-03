@@ -7,8 +7,6 @@ import (
 	"net/http"
 
 	draftservices "github.com/kirsh-nat/gophermart.git/internal/services/draftServices"
-	orderservices "github.com/kirsh-nat/gophermart.git/internal/services/orderServices"
-	userservices "github.com/kirsh-nat/gophermart.git/internal/services/userServices"
 )
 
 type DraftItem struct {
@@ -41,34 +39,19 @@ func (h *URLHandler) CreateDraft(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	activeOrder, err := orderservices.GetByNumber(h.db, r.Context(), draftItem.Number)
+	err = draftservices.NewUserDraft(h.db, r.Context(), activeUser, draftItem.Number, draftItem.Sum)
 	if err != nil {
-		var notFoundErr *orderservices.OrderNotFoundError
-		if errors.As(err, &notFoundErr) {
-			w.WriteHeader(http.StatusUnprocessableEntity)
+		var userNotAuthErr *draftservices.UserNotAuthorizedError
+		if errors.As(err, &userNotAuthErr) {
+			w.WriteHeader(http.StatusForbidden)
 			return
 		}
-		h.StatusServerError(w, r)
-		return
-	}
+		var paymentRequiredErr *draftservices.PaymentRequiredError
+		if errors.As(err, &paymentRequiredErr) {
+			w.WriteHeader(http.StatusPaymentRequired)
+			return
+		}
 
-	if activeOrder.UserID != activeUser.ID {
-		w.WriteHeader(http.StatusForbidden)
-		return
-	}
-	if activeOrder.Accural < draftItem.Sum {
-		w.WriteHeader(http.StatusPaymentRequired)
-		return
-	}
-
-	_, err = draftservices.CreateDraft(h.db, r.Context(), draftItem.Number, activeUser.ID, draftItem.Sum)
-	if err != nil {
-		h.StatusServerError(w, r)
-		return
-	}
-
-	err = userservices.UpdateSpent(h.db, r.Context(), activeUser.ID, draftItem.Sum)
-	if err != nil {
 		h.StatusServerError(w, r)
 		return
 	}

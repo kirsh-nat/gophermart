@@ -40,16 +40,13 @@ func (h *URLHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Can't read request body"))
 		return
 	}
-
-	errNumber := orderservices.CheckNumber(string(reqNumber))
-	if errNumber != nil {
-		w.WriteHeader(http.StatusUnprocessableEntity)
-		w.Write([]byte(""))
-		return
-	}
-
-	_, err = orderservices.Create(h.db, r.Context(), string(reqNumber), user.ID)
+	err = orderservices.NewUserOrder(h.db, r.Context(), user.ID, string(reqNumber))
 	if err != nil {
+		var formatErr *orderservices.NumberFormatError
+		if errors.As(err, &formatErr) {
+			w.WriteHeader(http.StatusUnprocessableEntity)
+			return
+		}
 		var userErr *orderservices.UserNumberExistsError
 		if errors.As(err, &userErr) {
 			w.WriteHeader(http.StatusOK)
