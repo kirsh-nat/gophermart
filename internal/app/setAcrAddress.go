@@ -7,7 +7,7 @@ import (
 
 func setAcrAddress() {
 	flag.StringVar(&AccrualAddress,
-		"r", "localhost:3232",
+		"r", "localhost:8080",
 		"Адрес запуска HTTP-сервера",
 	)
 	flag.Parse()

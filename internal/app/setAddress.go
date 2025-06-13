@@ -7,7 +7,7 @@ import (
 
 func setAddress() {
 	flag.StringVar(&Address,
-		"a", "localhost:8080",
+		"a", "localhost:8000",
 		"Адрес запуска HTTP-сервера",
 	)
 	flag.Parse()
