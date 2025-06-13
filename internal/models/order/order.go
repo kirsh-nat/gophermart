@@ -1,0 +1,9 @@
+package order
+
+const (
+	PROCESSED  = "PROCESSED"
+	REGISTERED = "REGISTERED"
+	INVALID    = "INVALID"
+	PROCESSING = "PROCESSING"
+	NEW        = "NEW"
+)
